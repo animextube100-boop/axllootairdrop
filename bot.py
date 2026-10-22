@@ -38,7 +38,7 @@ from telegram.ext import (
 )
 
 # ───────────────────────── CONFIG ─────────────────────────
-BOT_TOKEN = os.getenv("BOT_TOKEN", "PUT_YOUR_BOT_TOKEN_HERE")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "8881285843:AAEWDuJPVHg8BQ4oa-eF6OLXPigrR-_Ye7o")
 ADMIN_ID = 8564982849
 
 TOKEN_NAME = "AXL"
