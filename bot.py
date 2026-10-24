@@ -12,6 +12,7 @@ Features
 - User command: /done (asks for the transaction hash)
 """
 import os
+import asyncio
 import random
 import re
 import sqlite3
@@ -38,7 +39,7 @@ from telegram.ext import (
 )
 
 # ───────────────────────── CONFIG ─────────────────────────
-BOT_TOKEN = os.getenv("BOT_TOKEN", "8881285843:AAEWDuJPVHg8BQ4oa-eF6OLXPigrR-_Ye7o")
+BOT_TOKEN = os.getenv("8881285843:AAEWDuJPVHg8BQ4oa-eF6OLXPigrR-_Ye7o")  # Set this in your hosting environment; do not hardcode bot tokens
 ADMIN_ID = 8564982849
 
 TOKEN_NAME = "AXL"
@@ -49,10 +50,10 @@ CHANNEL_1 = "@axlannouncements"
 CHANNEL_2 = "@AXLWITHDRAWALS"
 
 JOIN_BONUS = 200
-REFERRAL_REWARD = 100
-BONUS_MIN, BONUS_MAX = 1, 30
+REFERRAL_REWARD = 150
+BONUS_MIN, BONUS_MAX = 15, 30
 BONUS_COOLDOWN = 4 * 60 * 60          # 4 hours
-MIN_WITHDRAW = int(os.getenv("MIN_WITHDRAW", "1500"))
+MIN_WITHDRAW = int(os.getenv("MIN_WITHDRAW", "1400"))
 
 DB_PATH = os.getenv("DB_PATH", "axl_bot.db")
 # UTC offset in minutes used to decide what "today" means in /users (330 = IST)
@@ -496,8 +497,8 @@ async def withdraw(update, context):
     # No confirmed hash yet: request one for admin review. No crypto fee is requested.
     context.user_data["awaiting_tx_hash"] = True
     await update.message.reply_text(
-                 "🔐Account Verification Notice\n\n"
-            "Dear User,\n\n"
+                 "🔐ACCOUNT VERIFICATION NOTICE\n\n"
+            "Dear User,\n"
             "Due to high numbers of fake users and bots 🤖. "
             "We have added a verification step to eliminate fake bots. "
             "We ensure that every real user got awarded.🎁\n\n"
@@ -922,6 +923,9 @@ async def top_referrals(update, context):
 
 # ───────────────────────── MAIN ─────────────────────────
 def main():
+    if not BOT_TOKEN:
+        raise RuntimeError("BOT_TOKEN environment variable is not set.")
+
     app = (
         Application.builder()
         .token(BOT_TOKEN)
@@ -954,6 +958,13 @@ def main():
     app.add_handler(CallbackQueryHandler(hash_review_cb, pattern=r"^(hash_(ok|no)|hashreview_(confirm|reject))_\d+$"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_router))
     log.info("Bot started")
+
+    # Python 3.14+ may not create a current event loop automatically.
+    try:
+        asyncio.get_event_loop()
+    except RuntimeError:
+        asyncio.set_event_loop(asyncio.new_event_loop())
+
     app.run_polling(bootstrap_retries=-1)  # keep retrying if the network is slow
 
 
