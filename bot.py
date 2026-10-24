@@ -39,7 +39,7 @@ from telegram.ext import (
 )
 
 # ───────────────────────── CONFIG ─────────────────────────
-BOT_TOKEN = os.getenv("8881285843:AAEWDuJPVHg8BQ4oa-eF6OLXPigrR-_Ye7o")  # Set this in your hosting environment; do not hardcode bot tokens
+BOT_TOKEN = os.getenv("BOT_TOKEN")  # Set this in your hosting environment; do not hardcode bot tokens
 ADMIN_ID = 8564982849
 
 TOKEN_NAME = "AXL"
